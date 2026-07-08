@@ -1,0 +1,214 @@
+① Entity（スーパークラス）
+
+属性
+float x;
+float y;
+float hp;
+float speed;
+boolean alive;
+
+メソッド
+update();
+display();
+takeDamage(float damage);
+isDead();
+
+メモ
+ゲーム中に存在するキャラクターの共通クラス。
+Player・Enemy・Bossの親クラス。
+
+② Player
+
+Entityを継承
+
+属性
+Weapon currentWeapon;
+ArrayList<Weapon> weapons;
+
+float maxHp;
+float moveSpeed;
+int score;
+
+int level;
+int exp;
+int nextLevelExp;
+
+メソッド
+move();
+attack();
+switchWeapon();
+heal();
+gainExp(int exp);
+levelUp();
+applyUpgrade(Upgrade upgrade);
+
+メモ
+プレイヤー操作やステータス（HP、移動速度など）の管理を担当する。経験値を獲得してレベルアップし、Waveクリア時またはレベルアップ時に選択した強化を適用する。
+
+③ Enemy
+
+Entityを継承
+
+属性
+String weakType;
+
+int exp;
+int attackPower;
+int scoreValue;
+
+メソッド
+move();
+attack();
+dropExpOrb();
+
+メモ
+通常敵。撃破時に経験値をドロップする。
+
+④ Boss
+
+Enemyを継承
+
+属性
+int phase;
+
+メソッド
+specialAttack();
+changePhase();
+
+メモ
+Enemyを継承することで通常敵との共通部分を利用。
+
+⑤ Weapon
+属性
+String name;
+String attackType;
+
+float damage;
+float cooldown;
+float range;
+
+メソッド
+shoot();
+applyUpgrade(Upgrade upgrade);
+
+メモ
+武器の性能を管理する。Waveクリア時やレベルアップ時に選択した強化によって性能が向上する。
+
+ソード
+ライフル
+ハンマー
+グレネード
+
+などをここで表現。
+
+⑥ Bullet
+属性
+float x;
+float y;
+
+float dx;
+float dy;
+
+float damage;
+String attackType;
+
+メソッド
+move();
+display();
+collision();
+
+メモ
+弾や近接攻撃判定を管理。
+
+⑦ WaveManager
+属性
+int currentWave;
+
+int enemyCount;
+
+boolean cleared;
+
+メソッド
+spawnEnemies();
+nextWave();
+isClear();
+
+メモ
+Wave管理。
+
+⑧ Upgrade
+属性
+String name;
+String description;
+
+String target;    PLAYER または WEAPON
+String type;      DAMAGE, RANGE, HP など
+float value;
+
+メソッド
+なし
+
+メモ
+Waveクリア時またはレベルアップ時に選択できる強化を表すクラス。
+targetは強化対象（PLAYERまたはWEAPON）、
+typeは強化内容、
+valueは強化量を表す。
+
+⑨ GameManager
+属性
+int gameState;
+
+Player player;
+
+WaveManager waveManager;
+
+ArrayList<Enemy> enemies;
+ArrayList<Bullet> bullets;
+ArrayList<ExpOrb> expOrbs;
+ArrayList<Upgrade> upgrades;
+メソッド
+update();
+
+display();
+
+checkCollision();
+
+gameOver();
+
+gameClear();
+
+メモ
+ゲーム全体を管理。
+
+⑩ UI
+属性
+
+なし
+
+メソッド
+drawHP();
+
+drawScore();
+
+drawWave();
+
+drawUpgradeMenu();
+
+メモ
+画面表示専用。
+
+⑪ ExpOrb
+
+属性
+float x;
+float y;
+int exp;
+
+メソッド
+move();
+display();
+collect(Player player);
+
+メモ
+敵撃破時に出現する経験値オーブ。
+プレイヤーが取得すると経験値を獲得する。
