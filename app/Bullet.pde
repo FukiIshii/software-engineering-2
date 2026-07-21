@@ -13,7 +13,17 @@ class Bullet {
 
   boolean alive;
 
-  Bullet(float x, float y, float angle, float speed, float damage, String attackType) {
+  boolean pierce;  // 貫通属性なら敵を貫いて飛び続ける
+  ArrayList<Enemy> hitEnemies;  // 貫通弾が同じ敵に多重ヒットしないようにする
+
+  boolean explosive;       // 爆発属性なら着弾地点周囲に範囲ダメージを与える
+  float explosionRadius;   // 爆風が届く半径（強化で変動するため武器から受け取る）
+
+  float knockbackForce;    // 命中時のノックバックの強さ（強化で変動するため武器から受け取る）
+
+  float bulletDiameter;    // 見た目・当たり判定に使う弾の直径
+
+  Bullet(float x, float y, float angle, float speed, float damage, String attackType, float explosionRadius, float knockbackForce) {
 
     this.x = x;
     this.y = y;
@@ -27,6 +37,16 @@ class Bullet {
     dy = sin(angle);
 
     alive = true;
+
+    pierce = attackType.equals("貫通");
+    hitEnemies = new ArrayList<Enemy>();
+
+    explosive = attackType.equals("爆発");
+    this.explosionRadius = explosionRadius;
+    this.knockbackForce = knockbackForce;
+
+    // 大砲モード（打撃）は大砲の砲弾イメージで他より大きめの球にする
+    bulletDiameter = attackType.equals("打撃") ? 18 : 10;
   }
 
   void update() {
@@ -48,7 +68,7 @@ class Bullet {
   void display() {
 
     fill(255, 255, 0);
-    ellipse(x, y, 10, 10);
+    ellipse(x, y, bulletDiameter, bulletDiameter);
 
   }
 
